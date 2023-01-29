@@ -10,29 +10,47 @@ class Racer(pg.sprite.Sprite):
     def __init__(self, x, y, width, height, dt):
         super().__init__()
         self.pos = pg.Vector2(x, y)
-        dx = (np.random.rand() - 0.5) * 2
-        dy = (np.random.rand() - 0.5) * 2
-        ddx = (np.random.rand() - 0.5) * 2
-        ddy = (np.random.rand() - 0.5) * 2
-
         self.dt = dt
-        self.vel = pg.Vector2(dx, dy)
-        self.acc = pg.Vector2(ddx, ddy)
+        self.vel = pg.Vector2(0, 0)
+        self.speed = 0
+        self.angle = 0
         
         self.rect = self.image.get_rect(center=self.pos)
-        _, orient = self.vel.as_polar()
-        self.image = pg.transform.rotate(Racer.image, -orient)
+        self.image = pg.transform.rotate(Racer.image, -self.vel[1])
         self.sc_width = width
         self.sc_height = height
         self.perception_r = 150
         self.max_speed = 10
         self.max_acc = 1.5
+        self.warp = False
+        self.warp_factor = 50
+        self.warp_timer = 0
+
+    def turn_right(self):
+        self.angle += 10
+
+    def turn_left(self):
+        self.angle -= 10
+
+    def speed_up(self):
+        self.speed += 10
+
+    def slow_down(self):
+        self.speed -= 10
 
     def move(self):
-        self.pos += self.vel*self.dt + 0.5*self.acc*self.dt*self.dt
-        self.vel += self.acc*self.dt
-        _, orient = self.vel.as_polar()
-        self.image = pg.transform.rotate(Racer.image, -orient)
+        self.vel.from_polar((self.speed, self.angle))
+        self.image = pg.transform.rotate(Racer.image, -self.angle)
+        if self.warp and self.warp_timer <= 0:
+            warp_vec = pg.Vector2(0, 0)
+            warp_vec.from_polar((1, self.angle))
+            self.pos += self.warp_factor * warp_vec
+            self.warp_timer = 10
+            self.warp = False
+        elif self.warp_timer > 0:
+            self.warp_timer -= self.dt
+
+        self.pos += self.vel * self.dt
         self.rect.center = self.pos
         if np.linalg.norm(self.vel) > self.max_speed:
             self.vel = self.vel / np.linalg.norm(self.vel) * self.max_speed
