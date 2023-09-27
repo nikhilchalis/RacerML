@@ -7,28 +7,26 @@ from racer_class import Racer
 SC_WIDTH = 1000
 SC_HEIGHT = 1000
 DT = 0.1
+FPS = 25
+BLACK = (0, 0, 0)
 
 
-'''
-# Setup
-pg.init()
-clock = pg.time.Clock()
+def main():
+    pg.init()
+    sc = pg.display.set_mode((SC_WIDTH, SC_HEIGHT))
+    clock = pg.time.Clock()
+    sc.fill(BLACK)
 
-# Game screen
+    p_x = np.random.rand() * SC_WIDTH
+    p_y = np.random.rand() * SC_HEIGHT
 
-# Initialise a racer
-p_x = np.random.rand() * SC_WIDTH
-p_y = np.random.rand() * SC_HEIGHT
-
-basic_racer = Racer(p_x, p_y, SC_WIDTH, SC_HEIGHT, dt)
-
-# Run the game loop
-running = True
-while running:
+    basic_racer = Racer(p_x, p_y, SC_WIDTH, SC_HEIGHT, DT)
     
-    for event in pg.event.get():
-        if event.type == pg.QUIT:
-            running = False
+    running = True
+    while running:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                running = False
         
         pressed = pg.key.get_pressed()
         if (pressed[pg.K_UP] or pressed[pg.K_w]): 
@@ -42,30 +40,15 @@ while running:
         elif (pressed[pg.K_SPACE]): 
             basic_racer.warp = True
         
-    pg.display.flip()
-    sc.fill((0, 0, 0)) 
 
-    basic_racer.move()
-    basic_racer.wrap()
-    sc.blit(basic_racer.image, basic_racer.pos)
+        clock.tick(FPS)
+        pg.display.flip()
+        sc.fill(BLACK)
 
-    clock.tick(30)
-
-# Quit Pygame
-pg.quit()
-'''
-
-def main():
-    pg.init()
-    sc = pg.display.set_mode((SC_WIDTH, SC_HEIGHT))
-    clk = pg.time.Clock()
-    sc.fill(pg.Color('black'))
-
-    running = True
-    while running:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                running = False
+        basic_racer.move()
+        basic_racer.wrap()
+        sc.blit(basic_racer.image, basic_racer.pos)
+        
     
 
 if __name__ == "__main__":
