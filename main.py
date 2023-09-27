@@ -3,21 +3,24 @@ import sys
 import numpy as np
 from racer_class import Racer
 
+# constants
+SC_WIDTH = 1000
+SC_HEIGHT = 1000
+DT = 0.1
+
+
+'''
 # Setup
 pg.init()
 clock = pg.time.Clock()
 
 # Game screen
-sc_width = 1000
-sc_height = 1000
-sc = pg.display.set_mode((sc_width, sc_height))
-dt = 0.1
 
 # Initialise a racer
-p_x = np.random.rand() * sc_width
-p_y = np.random.rand() * sc_height
+p_x = np.random.rand() * SC_WIDTH
+p_y = np.random.rand() * SC_HEIGHT
 
-basic_racer = Racer(p_x, p_y, sc_width, sc_height, dt)
+basic_racer = Racer(p_x, p_y, SC_WIDTH, SC_HEIGHT, dt)
 
 # Run the game loop
 running = True
@@ -50,3 +53,20 @@ while running:
 
 # Quit Pygame
 pg.quit()
+'''
+
+def main():
+    pg.init()
+    sc = pg.display.set_mode((SC_WIDTH, SC_HEIGHT))
+    clk = pg.time.Clock()
+    sc.fill(pg.Color('black'))
+
+    running = True
+    while running:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                running = False
+    
+
+if __name__ == "__main__":
+    main()
